@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Segredos (nunca enviar)
+.env
+
+# Dataset (os termos do Common Voice proíbem re-hospedar)
+data/
+
+# Documentos privados de estratégia
+docs/privado/
+
+# Modelos baixados
+models/
+
+# Sistema e IDEs
+.DS_Store
+Thumbs.db
+.idea/
