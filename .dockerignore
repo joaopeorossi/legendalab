@@ -1,0 +1,10 @@
+# Nunca vai para o build: áudio do Common Voice (os termos proíbem re-hospedar), documentos privados,
+# segredos, ambiente local, testes e caches
+data/
+docs/privado/
+.env
+.venv/
+.git/
+tests/
+__pycache__/
+.pytest_cache/
