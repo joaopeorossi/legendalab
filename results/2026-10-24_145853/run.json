@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-24T14:58:53",
+  "dataset": {
+    "name": "Common Voice pt-BR (Mozilla Data Collective)",
+    "file": "test.tsv",
+    "total": 427
+  },
+  "seed": 42,
+  "n_samples": 427,
+  "models": [
+    "whisper-base",
+    "whisper-small"
+  ],
+  "wall_time_s": {
+    "whisper-base": 699.4,
+    "whisper-small": 1878.6
+  },
+  "settings": {
+    "language": "pt",
+    "device": "cpu",
+    "compute_type": "int8",
+    "cpu_threads": 2
+  },
+  "normalization_version": "v1",
+  "machine": {
+    "processor": "AMD64 Family 23 Model 113 Stepping 0, AuthenticAMD",
+    "cpu_count": 6,
+    "system": "Windows-11-10.0.26200-SP0"
+  },
+  "versions": {
+    "python": "3.12.7",
+    "faster-whisper": "1.2.1",
+    "ctranslate2": "4.8.3",
+    "av": "18.1.0",
+    "jiwer": "4.0.0"
+  }
+}

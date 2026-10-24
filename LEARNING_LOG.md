@@ -19,3 +19,12 @@ O LegendaLab agora pega um áudio curto de alguém falando em português e trans
 - **Uma decisão que tomei:** na hora de medir, manter os acentos e tirar a pontuação. Acento muda a palavra ("e" e "é", "esta" e "está"), então errar o acento tem que contar como erro. Pontuação não é palavra. O lado ruim é que o meu WER não mede pontuação, e isso fica como limitação.
 
 ---
+
+### 2026-10-24 — B2: benchmark dos 2 modelos
+Medi os dois tamanhos do Whisper nas 427 frases do conjunto de teste inteiro do Common Voice pt-BR. O small errou 22,9% das palavras e o base, 38,6%, mas o small levou 0,86 s para cada segundo de áudio. Pela regra que defini antes de ver os números (o menor erro entre os que levam até 0,5 s por segundo de áudio), a demo usa o base.
+
+- **O que aprendi:** o modelo mais preciso nem sempre é o que dá para usar. Com 2 núcleos de CPU, o small fica perto do tempo real e o base é quase 3 vezes mais rápido. Também vi onde o modelo mais erra: listas de termos técnicos e nomes próprios ("lotusscript", "Piccadilly"), e em duas frases ele entrou em repetição ("e o hábita e o hábita e o hábita").
+- **O que me confundiu:** durante os 45 minutos da rodada, o terminal não mostrava progresso nenhum. O Python guarda as mensagens num buffer quando a saída vai para um arquivo e só solta tudo no fim. Resolvi com `flush=True` no print do progresso.
+- **Uma decisão que tomei:** medir com 2 threads, igual às 2 vCPUs que a demo vai ter na nuvem, e não com os 4 que o faster-whisper usa por padrão. Assim a regra de velocidade vale para a máquina da demo. Também tirei o custo estimado da tabela: era só uma conta com o preço público e não ajudava quem usa a legenda.
+
+---

@@ -81,7 +81,7 @@ def run_model(transcriber: Transcriber, samples: list[Sample]) -> list[dict[str,
             **_confidence_signals(transcription),
         })
         if i % 50 == 0:
-            print(f"  {transcriber.name}: {i}/{len(samples)} frases")
+            print(f"  {transcriber.name}: {i}/{len(samples)} frases", flush=True)  # aparece na hora, mesmo em arquivo
     return results
 
 
