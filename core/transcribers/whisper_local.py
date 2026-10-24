@@ -15,7 +15,12 @@ class WhisperTranscriber(Transcriber):
     def __init__(self, size: str) -> None:
         """Carrega o modelo agora (parte lenta), para não repetir a cada áudio."""
         self.name = f"whisper-{size}"
-        self._model = WhisperModel(size, device=config.DEVICE, compute_type=config.COMPUTE_TYPE)
+        self._model = WhisperModel(
+            size,
+            device=config.DEVICE,
+            compute_type=config.COMPUTE_TYPE,
+            cpu_threads=config.CPU_THREADS,
+        )
 
     def transcribe(self, audio_path: Path) -> Transcription:
         """Transcreve em português, com tempo por palavra e filtro de silêncio, medindo o tempo."""

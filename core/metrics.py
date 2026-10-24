@@ -1,6 +1,7 @@
-"""Métricas do benchmark: contagem de erros de palavra, WER e velocidade (RTF)."""
+"""Métricas do benchmark: contagem de erros de palavra, WER, velocidade (RTF) e escolha do modelo (RN6)."""
 
 from dataclasses import dataclass
+from typing import Any
 
 import jiwer
 
@@ -55,3 +56,13 @@ def rtf(processing_time_s: float, audio_duration_s: float) -> float:
     if audio_duration_s <= 0:
         raise ValueError("A duração do áudio precisa ser maior que zero.")
     return processing_time_s / audio_duration_s
+
+
+def choose_default_model(summaries: list[dict[str, Any]], rtf_limit: float) -> str | None:
+    """RN6: entre os modelos com RTF dentro do limite, escolhe o de menor WER; None se nenhum passar."""
+    # float() aceita tanto números quanto o texto lido do summary.csv.
+    fast_enough = [s for s in summaries if float(s["rtf"]) <= rtf_limit]
+    if not fast_enough:
+        return None
+    best = min(fast_enough, key=lambda s: float(s["corpus_wer"]))
+    return str(best["model"])
