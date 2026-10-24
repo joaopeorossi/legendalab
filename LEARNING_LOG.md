@@ -46,3 +46,12 @@ Agora dá para enviar um vídeo por uma página e assistir com a legenda. O serv
 - **Uma decisão que tomei:** o modelo da demo fica no `config.py`, e um teste confere se ele é o mesmo que a regra de escolha aponta no último benchmark. Se alguém mudar o limite de velocidade e a regra passar a escolher outro modelo, o teste quebra e avisa.
 
 ---
+
+### 2026-10-24 — B5: README final
+Reescrevi o README para alguém de fora entender o projeto em 2 minutos: o problema, o que o LegendaLab faz, os resultados do benchmark, um diagrama do fluxo, como rodar, as limitações e as fontes. O GIF da demo entra depois.
+
+- **O que aprendi:** todo número do README precisa vir de um arquivo em `results/`. Eu ia citar que as frases marcadas como duvidosas concentram 84% dos erros, mas essa conta tinha sido feita fora do benchmark. Acrescentei a conta ao `calibrate.py` e rodei de novo antes de citar.
+- **O que me confundiu:** a regra `data/` do `.gitignore`, que protege os áudios do Common Voice, ignorava qualquer pasta chamada `data`, inclusive a `tests/data` com o arquivo esperado de um teste. O teste ficaria fora do GitHub sem eu perceber. Renomeei a pasta para `tests/fixtures`.
+- **Uma decisão que tomei:** declarar como limitação que a legenda não descreve sons (música, risos) nem identifica quem fala. Uma legenda feita para surdos normalmente tem isso, e quem conhece o assunto vai notar a falta.
+
+---
