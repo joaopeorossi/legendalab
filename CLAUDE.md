@@ -7,7 +7,7 @@ Instruções para o Claude Code neste repositório. **Responda sempre em portugu
 Projeto de portfólio de João Rossi (1º ano de ADS na FIAP).
 Documentos de referência em `docs/privado/` (pasta local, fora do Git — nunca mover para fora dela nem citar o conteúdo em arquivos públicos):
 
-- `OPERACAO_GLOBO_PROJECT_SOURCE_OF_TRUTH.md` — decisões (fonte de verdade).
+- `PROJECT_SOURCE_OF_TRUTH.md` — decisões (fonte de verdade).
 - `LEGENDALAB_TECH_SPEC.md` — especificação técnica.
 - `LEGENDALAB_ROADMAP.md` — **v2**: blocos B1 a B7, prompts, arquivos e funções de cada bloco, critérios de aceite e testes de entendimento.
 - `GUIA_PREPARACAO_E0.md` — preparação do ambiente.
@@ -30,7 +30,7 @@ João não escreve o código, mas **precisa entender cada parte** e conseguir ex
 
 - Implemente apenas o que está no bloco atual do roadmap e na spec. Não adicione funcionalidades, dependências ou arquivos fora disso sem perguntar.
 - Se achar que uma decisão registrada deveria mudar, **proponha e espere**. João registra as decisões na SoT.
-- **Proibido:** conteúdo, marca ou visual da Globo; resumo ou reescrita de texto por LLM; APIs pagas de transcrição; executar comandos de nuvem (`gcloud` e similares) ou que gerem custo.
+- **Proibido:** conteúdo, marca ou visual de empresas reais; resumo ou reescrita de texto por LLM; APIs pagas de transcrição; executar comandos de nuvem (`gcloud` e similares) ou que gerem custo.
 
 ## Código
 
