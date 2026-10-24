@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LegendaLab</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f6f7f9; --text: #16181d; --muted: #5a6170; --border: #d5d9e0;
+    --accent: #1d4ed8; --accent-text: #ffffff;
+    --doubt-bg: #fff4d6; --doubt-border: #b7791f; --doubt-text: #6b4500;
+    --hard-bg: #f3e8ff; --hard-border: #7e22ce; --hard-text: #581c87;
+    --error-bg: #fde8e8; --error-border: #b91c1c; --error-text: #7f1d1d;
+    --active: #e0ecff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111318; --surface: #1b1e25; --text: #eceef2; --muted: #a3aab8; --border: #333844;
+      --accent: #6b9bff; --accent-text: #0b1020;
+      --doubt-bg: #3a2c0b; --doubt-border: #e0a83a; --doubt-text: #ffd98a;
+      --hard-bg: #2d1a42; --hard-border: #b77cf2; --hard-text: #e3c8ff;
+      --error-bg: #3d1414; --error-border: #f07070; --error-text: #ffc9c9;
+      --active: #1f3157;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto; max-width: 920px; padding: 16px;
+    font: 18px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+  }
+  h1 { margin: 8px 0 0; font-size: 1.8rem; }
+  h2 { font-size: 1.25rem; margin: 28px 0 8px; }
+  .lead { margin: 4px 0 16px; color: var(--muted); }
+  .notice {
+    margin: 0 0 20px; padding: 12px 16px; border-left: 6px solid var(--doubt-border);
+    background: var(--doubt-bg); color: var(--doubt-text); font-weight: 600; border-radius: 6px;
+  }
+  form {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  form label { flex-basis: 100%; font-weight: 600; }
+  input[type="file"] { flex: 1 1 260px; font-size: 1rem; color: var(--text); }
+  button, .download {
+    font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: 0;
+    background: var(--accent); color: var(--accent-text); cursor: pointer; text-decoration: none;
+  }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  #status { min-height: 1.5em; font-weight: 600; }
+  .error {
+    padding: 12px 16px; border-left: 6px solid var(--error-border); background: var(--error-bg);
+    color: var(--error-text); border-radius: 6px;
+  }
+  .error small { display: block; margin-top: 4px; opacity: 0.8; }
+  video { display: block; width: 100%; max-height: 70vh; background: #000; border-radius: 10px; margin-top: 16px; }
+  video::cue { font-size: 1.15em; background: rgba(0, 0, 0, 0.85); color: #fff; }
+  #summary { margin: 12px 0; }
+  .key { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: 0.95rem; margin: 0 0 8px; }
+  ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .cue { padding: 10px 14px; border: 1px solid var(--border); border-left-width: 6px; border-radius: 8px; }
+  .cue.doubt { border-left-color: var(--doubt-border); background: var(--doubt-bg); }
+  .cue.hard { border-left-color: var(--hard-border); }
+  .cue.doubt.hard { border-left-style: double; }
+  .cue.active { outline: 3px solid var(--accent); }
+  .cue .time {
+    padding: 2px 8px; font-size: 0.85rem; font-weight: 600; background: var(--surface);
+    color: var(--text); border: 1px solid var(--border);
+  }
+  .cue .text { margin: 6px 0 4px; font-size: 1.1rem; }
+  .tag { display: inline-block; margin: 4px 6px 0 0; padding: 2px 8px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; }
+  .tag.doubt { background: var(--doubt-bg); color: var(--doubt-text); border: 1px solid var(--doubt-border); }
+  .tag.hard { background: var(--hard-bg); color: var(--hard-text); border: 1px solid var(--hard-border); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>LegendaLab</h1>
+  <p class="lead">Legendas em português para pessoas surdas, com aviso dos trechos em que a IA pode ter errado.</p>
+</header>
+
+<p class="notice" role="note">⚠ Legenda automática: trechos destacados podem estar errados.</p>
+
+<form id="form">
+  <label for="file">Escolha um vídeo curto, de até 1 minuto. Ele não fica guardado no servidor.</label>
+  <input id="file" name="file" type="file" accept="video/*,audio/*" required>
+  <button id="submit" type="submit">Gerar legenda</button>
+</form>
+
+<p id="status" role="status" aria-live="polite"></p>
+<div id="error" class="error" role="alert" hidden></div>
+
+<section id="result" hidden>
+  <video id="player" controls playsinline></video>
+  <p id="summary"></p>
+  <a id="download" class="download" download="legenda.vtt">Baixar legenda (.vtt)</a>
+  <h2>Blocos da legenda</h2>
+  <p class="key">
+    <span><span class="tag doubt">⚠ Pode estar errado</span> a IA estava insegura neste trecho</span>
+    <span><span class="tag hard">Difícil de ler</span> rápido ou longo demais para a leitura</span>
+  </p>
+  <ol id="cues"></ol>
+</section>
+
+<script>
+  // Todo texto vindo do servidor entra com textContent: um "<script>" na transcrição aparece como texto, não executa.
+  const form = document.getElementById("form");
+  const fileInput = document.getElementById("file");
+  const submitButton = document.getElementById("submit");
+  const statusText = document.getElementById("status");
+  const errorBox = document.getElementById("error");
+  const resultSection = document.getElementById("result");
+  const player = document.getElementById("player");
+  const summaryText = document.getElementById("summary");
+  const downloadLink = document.getElementById("download");
+  const cueList = document.getElementById("cues");
+
+  const RULES = {
+    cps: ["rápido demais para ler", "caracteres por segundo"],
+    max_lines: ["linhas demais", "linhas"],
+    max_chars_per_line: ["linha longa demais", "caracteres"],
+    min_duration: ["fica pouco tempo na tela", "s"],
+    max_duration: ["fica tempo demais na tela", "s"],
+  };
+  let videoUrl = null;
+  let vttUrl = null;
+
+  const number = (value) => (value === null ? "sem duração" : String(value).replace(".", ","));
+  const clock = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = (seconds % 60).toFixed(1).padStart(4, "0");
+    return `${String(m).padStart(2, "0")}:${s.replace(".", ",")}`;
+  };
+
+  function tag(text, kind) {
+    const span = document.createElement("span");
+    span.className = `tag ${kind}`;
+    span.textContent = text;
+    return span;
+  }
+
+  function showError(message, requestId) {
+    errorBox.replaceChildren();
+    errorBox.hidden = !message;
+    if (!message) return;
+    errorBox.append(message);
+    if (requestId) {
+      const small = document.createElement("small");
+      small.textContent = `Código da requisição: ${requestId}`;
+      errorBox.append(small);
+    }
+  }
+
+  function renderCue(cue, issues) {
+    const item = document.createElement("li");
+    item.className = "cue";
+    item.dataset.index = cue.index;
+    const time = document.createElement("button");
+    time.type = "button";
+    time.className = "time";
+    time.textContent = `${clock(cue.start)} – ${clock(cue.end)}`;
+    time.title = "Ir para este trecho do vídeo";
+    time.addEventListener("click", () => { player.currentTime = cue.start; player.play(); });
+    const text = document.createElement("p");
+    text.className = "text";
+    text.textContent = cue.text;
+    item.append(time, text);
+    if (cue.low_confidence) {
+      item.classList.add("doubt");
+      item.append(tag(`⚠ Pode estar errado: ${cue.reason}`, "doubt"));
+    }
+    for (const issue of issues) {
+      item.classList.add("hard");
+      const [label, unit] = RULES[issue.rule] || [issue.rule, ""];
+      const prefix = issue.severity === "violation" ? "Difícil de ler" : "Atenção";
+      item.append(tag(`${prefix}: ${label} (${number(issue.value)} ${unit}; limite ${number(issue.limit)})`, "hard"));
+    }
+    return item;
+  }
+
+  function showResult(file, body) {
+    if (videoUrl) URL.revokeObjectURL(videoUrl);
+    if (vttUrl) URL.revokeObjectURL(vttUrl);
+    videoUrl = URL.createObjectURL(file); // toca o SEU arquivo, que já está no navegador
+    vttUrl = URL.createObjectURL(new Blob([body.vtt], { type: "text/vtt" }));
+
+    player.querySelectorAll("track").forEach((old) => old.remove());
+    player.src = videoUrl;
+    const track = document.createElement("track");
+    track.kind = "subtitles";
+    track.srclang = "pt";
+    track.label = "Português";
+    track.src = vttUrl;
+    track.default = true;
+    player.appendChild(track);
+    track.track.mode = "showing";
+    track.addEventListener("cuechange", () => {
+      const active = new Set([...(track.track.activeCues || [])].map((c) => c.id));
+      cueList.querySelectorAll(".cue").forEach((li) => li.classList.toggle("active", active.has(li.dataset.index)));
+    });
+    downloadLink.href = vttUrl;
+
+    const issuesByCue = new Map();
+    for (const issue of [...body.legibility.violations, ...body.legibility.warnings]) {
+      issuesByCue.set(issue.cue_index, [...(issuesByCue.get(issue.cue_index) || []), issue]);
+    }
+    cueList.replaceChildren(...body.cues.map((cue) => renderCue(cue, issuesByCue.get(cue.index) || [])));
+
+    const s = body.legibility.summary;
+    summaryText.textContent = body.warning
+      ? body.warning.message
+      : `${s.cues} blocos · ${body.low_confidence_cues.length} podem estar errados · ` +
+        `${s.violations} problemas de leitura e ${s.warnings} avisos · ` +
+        `processado em ${number(body.processing_time_s)} s pelo ${body.model}`;
+    resultSection.hidden = false;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const file = fileInput.files[0];
+    if (!file) return;
+    showError(null);
+    submitButton.disabled = true;
+    statusText.textContent = "Gerando a legenda… isso pode levar alguns segundos.";
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const response = await fetch("/api/captions", { method: "POST", body: data });
+      const body = await response.json().catch(() => null);
+      if (!response.ok) {
+        showError(body?.message || "Não foi possível gerar a legenda.", body?.request_id);
+        statusText.textContent = "";
+        return;
+      }
+      showResult(file, body);
+      statusText.textContent = "Legenda pronta.";
+    } catch {
+      showError("Não foi possível falar com o servidor. Confira a conexão e tente de novo.");
+      statusText.textContent = "";
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

@@ -37,3 +37,12 @@ O LegendaLab agora divide a transcrição em blocos de legenda que respeitam o G
 - **Uma decisão que tomei:** manter o corte de 0,5 que defini antes de medir. Assim, 84% dos erros caem em frases marcadas, e quem não confere pelo áudio é avisado da maioria deles. Escolher o corte olhando o próprio conjunto de teste deixaria o número ajustado aos dados. O lado ruim são muitos destaques, e isso fica como limitação.
 
 ---
+
+### 2026-10-24 — B4: API e página
+Agora dá para enviar um vídeo por uma página e assistir com a legenda. O servidor confere o arquivo antes de gastar processamento (tamanho, tipo real, duração e se tem áudio), extrai o áudio, gera a legenda e apaga tudo no fim, inclusive quando dá erro. A página toca o próprio arquivo da pessoa com a legenda e lista os blocos, com ⚠ nos duvidosos e um rótulo nos difíceis de ler.
+
+- **O que aprendi:** o tipo do arquivo vem do conteúdo, não da extensão. O ffprobe reconhece um áudio salvo como `.txt` e recusa um texto salvo como `.mp4`. E o ffmpeg e o ffprobe são chamados com uma lista de argumentos, sem shell, então um nome de arquivo como `; rm -rf ~` vira só um argumento, nunca um comando.
+- **O que me confundiu:** o FastAPI lê o upload inteiro antes de chegar na minha função. Conferir o tamanho só durante a cópia não impediria alguém de mandar um arquivo gigante. Por isso o servidor também recusa pelo tamanho declarado no pedido, antes de ler o arquivo.
+- **Uma decisão que tomei:** o modelo da demo fica no `config.py`, e um teste confere se ele é o mesmo que a regra de escolha aponta no último benchmark. Se alguém mudar o limite de velocidade e a regra passar a escolher outro modelo, o teste quebra e avisa.
+
+---

@@ -1,5 +1,8 @@
 """Configuração central: todos os números e opções ajustáveis do projeto ficam aqui."""
 
+import os
+from pathlib import Path
+
 # Transcrição
 LANGUAGE = "pt"  # idioma fixo: evita que o modelo "adivinhe" outro idioma
 DEVICE = "cpu"  # o projeto roda sem placa de vídeo (no computador e na nuvem)
@@ -31,3 +34,19 @@ LOW_CONF_MAX_COMPRESSION_RATIO = 2.4  # acima disto: texto repetitivo demais
 LOW_CONF_MIN_WORD_PROBABILITY = 0.5  # abaixo disto: alguma palavra duvidosa
 REPETITION_MAX_NGRAM = 4  # procura trechos repetidos de 1 até este número de palavras
 REPETITION_MIN_REPEATS = 3  # quantas vezes seguidas o trecho precisa aparecer
+
+# Demo (API): os dois limites vêm de variável de ambiente, com estes valores como padrão,
+# para poderem mudar sem mexer no código
+MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))  # RN2: tamanho máximo do upload
+MAX_DURATION_S = float(os.environ.get("MAX_DURATION_S", "60"))  # RN1: duração máxima do vídeo
+UPLOAD_FORM_MARGIN_BYTES = 1024 * 1024  # folga para os cabeçalhos do formulário no Content-Length
+DEFAULT_MODEL = "base"  # RN6: escolhido pelo benchmark do B2 (conferido em tests/test_api.py)
+FFPROBE_TIMEOUT_S = 15  # tempo máximo para o ffprobe analisar o arquivo
+FFMPEG_TIMEOUT_S = 60  # tempo máximo para o ffmpeg extrair o áudio
+# Formatos aceitos, pelo nome que o ffprobe dá ao conteúdo (não pela extensão do arquivo, RN3)
+ALLOWED_FORMATS = {
+    "mov", "mp4", "m4a", "3gp", "3g2", "mj2", "matroska", "webm", "avi",
+    "mp3", "wav", "ogg", "flac", "aac", "mpegts", "asf",
+}
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+RESULTS_DIR = PROJECT_ROOT / "results"
