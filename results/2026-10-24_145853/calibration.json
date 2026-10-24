@@ -1,0 +1,36 @@
+{
+  "cutoffs": {
+    "max_no_speech_prob": 0.6,
+    "min_avg_logprob": -1.0,
+    "max_compression_ratio": 2.4,
+    "min_word_probability": 0.5,
+    "repetition": "3x seguidas, trechos de até 4 palavras"
+  },
+  "models": {
+    "whisper-base": {
+      "flagged": 258,
+      "unflagged": 169,
+      "without_transcription": 0,
+      "wer_flagged": 0.5137,
+      "wer_unflagged": 0.1679,
+      "errors_in_flagged": 0.8395,
+      "reasons": {
+        "palavra com baixa probabilidade": 258,
+        "modelo inseguro no trecho": 26,
+        "trecho repetido": 2
+      }
+    },
+    "whisper-small": {
+      "flagged": 141,
+      "unflagged": 286,
+      "without_transcription": 0,
+      "wer_flagged": 0.4216,
+      "wer_unflagged": 0.1304,
+      "errors_in_flagged": 0.6223,
+      "reasons": {
+        "modelo inseguro no trecho": 12,
+        "palavra com baixa probabilidade": 141
+      }
+    }
+  }
+}

@@ -14,3 +14,20 @@ NORMALIZATION_VERSION = "v1"
 SEED = 42  # RN10: mesma seed, mesmas frases sorteadas
 RTF_LIMIT = 0.5  # RN6: o modelo da demo precisa ter RTF menor ou igual a este limite
 ERRORS_REPORT_SIZE = 10  # quantas frases aparecem no errors.md
+
+# Legibilidade (RN7: Guia para Produções Audiovisuais Acessíveis, MinC/SAv, 2016)
+MAX_LINES = 2  # linhas por bloco de legenda
+MAX_CHARS_PER_LINE = 37  # caracteres por linha
+CPS_WARNING = 15  # acima disto (caracteres por segundo): aviso
+CPS_VIOLATION = 18  # acima disto: violação
+MIN_CUE_S = 1.0  # duração mínima de um bloco, em segundos
+MAX_CUE_S = 6.0  # duração máxima de um bloco, em segundos
+
+# Baixa confiança: valores iniciais (os três primeiros são os padrões do próprio Whisper),
+# ajustados olhando os erros reais na calibração (bench/calibrate.py)
+LOW_CONF_MAX_NO_SPEECH_PROB = 0.6  # acima disto: provável trecho sem fala
+LOW_CONF_MIN_AVG_LOGPROB = -1.0  # abaixo disto: modelo inseguro no trecho
+LOW_CONF_MAX_COMPRESSION_RATIO = 2.4  # acima disto: texto repetitivo demais
+LOW_CONF_MIN_WORD_PROBABILITY = 0.5  # abaixo disto: alguma palavra duvidosa
+REPETITION_MAX_NGRAM = 4  # procura trechos repetidos de 1 até este número de palavras
+REPETITION_MIN_REPEATS = 3  # quantas vezes seguidas o trecho precisa aparecer

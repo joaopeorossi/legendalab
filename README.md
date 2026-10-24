@@ -22,3 +22,11 @@ Comparei dois tamanhos do Whisper, rodando no próprio computador (sem API paga)
 **Onde o modelo erra:** as frases com mais erros são listas de termos técnicos e nomes próprios, e em duas o modelo entrou em repetição ("e o hábita e o hábita e o hábita"). As 10 piores estão em [errors.md](results/2026-10-24_145853/errors.md).
 
 Medido em 24/10/2026 · seed 42 · normalização v1 · dados completos em [results/2026-10-24_145853](results/2026-10-24_145853/).
+
+## A marcação de "trecho duvidoso" funciona?
+
+A pessoa surda não tem como conferir a legenda pelo áudio. Por isso, o LegendaLab marca os trechos em que o próprio modelo estava inseguro. Para saber se a marcação aponta onde o erro está, apliquei a mesma regra da demo às 427 frases do benchmark:
+
+- No modelo da demo (base), as frases marcadas tiveram **WER de 51,4%, contra 16,8%** nas demais, e concentraram **84% de todos os erros**.
+- O custo: **60% das frases** foram marcadas, então a demo mostra muitos destaques.
+- Os cortes foram definidos antes da medição (os três primeiros são os padrões do próprio Whisper) e não foram ajustados olhando o conjunto de teste. Dados em [calibration.json](results/2026-10-24_145853/calibration.json).

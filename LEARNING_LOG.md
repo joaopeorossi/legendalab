@@ -28,3 +28,12 @@ Medi os dois tamanhos do Whisper nas 427 frases do conjunto de teste inteiro do 
 - **Uma decisão que tomei:** medir com 2 threads, igual às 2 vCPUs que a demo vai ter na nuvem, e não com os 4 que o faster-whisper usa por padrão. Assim a regra de velocidade vale para a máquina da demo. Também tirei o custo estimado da tabela: era só uma conta com o preço público e não ajudava quem usa a legenda.
 
 ---
+
+### 2026-10-24 — B3: legenda, legibilidade e baixa confiança
+O LegendaLab agora divide a transcrição em blocos de legenda que respeitam o Guia de 2016 (até 2 linhas de 37 caracteres e até 6 segundos), gera o arquivo WebVTT que o player do navegador entende e aponta os blocos rápidos ou longos demais para ler. Também marca os trechos em que a IA estava insegura. Testei essa marcação nas 427 frases do benchmark: as frases marcadas tiveram 51,4% de erro, contra 16,8% nas demais.
+
+- **O que aprendi:** o algoritmo guloso da quebra em blocos. Ele vai pondo palavras no bloco enquanto cabe e, quando não cabe, fecha o bloco e abre outro, sem voltar atrás. A velocidade de leitura (caracteres por segundo) não entra nessa decisão, porque dividir o bloco não deixa a fala mais lenta; ela só é apontada depois. O sistema aponta, mas não reescreve o texto.
+- **O que me confundiu:** a marcação funcionou, mas marcou 60% das frases do modelo base. Fiquei entre marcar menos e deixar passar mais erros: com o corte em 0,3, só 30% das frases seriam marcadas, mas só 54% dos erros cairiam nelas.
+- **Uma decisão que tomei:** manter o corte de 0,5 que defini antes de medir. Assim, 84% dos erros caem em frases marcadas, e quem não confere pelo áudio é avisado da maioria deles. Escolher o corte olhando o próprio conjunto de teste deixaria o número ajustado aos dados. O lado ruim são muitos destaques, e isso fica como limitação.
+
+---
