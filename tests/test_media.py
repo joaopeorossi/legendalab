@@ -73,6 +73,7 @@ def test_ffprobe_is_called_without_shell_and_with_timeout(monkeypatch: pytest.Mo
     calls = []
 
     def fake_run(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[bytes]:
+        """Finge ser o subprocess.run: anota como foi chamado e devolve uma falha."""
         calls.append((command, kwargs))
         return subprocess.CompletedProcess(command, returncode=1, stdout=b"", stderr=b"")
 

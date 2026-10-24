@@ -144,6 +144,7 @@ def test_temporary_files_are_deleted_even_on_error(
     real_mkdtemp = tempfile.mkdtemp
 
     def spy_mkdtemp(*args: str, **kwargs: str) -> str:
+        """Cria a pasta temporária de verdade e anota o caminho para conferir depois."""
         folder = real_mkdtemp(*args, **kwargs)
         created.append(Path(folder))
         return folder
