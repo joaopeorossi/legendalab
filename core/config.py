@@ -7,7 +7,7 @@ from pathlib import Path
 LANGUAGE = "pt"  # idioma fixo: evita que o modelo "adivinhe" outro idioma
 DEVICE = "cpu"  # o projeto roda sem placa de vídeo (no computador e na nuvem)
 COMPUTE_TYPE = "int8"  # números de 8 bits: mais rápido e menos memória na CPU
-CPU_THREADS = 2  # imita as 2 vCPU da demo no Cloud Run, para o RTF medido valer para a RN6
+CPU_THREADS = 2  # imita as 2 vCPU da demo no Azure Container Apps, para o RTF medido valer para a RN6
 MODEL_SIZES = ("base", "small")  # tamanhos do Whisper comparados no benchmark
 
 # Medição do erro (RN8: o WER sempre registra qual normalização usou)
@@ -15,7 +15,7 @@ NORMALIZATION_VERSION = "v1"
 
 # Benchmark
 SEED = 42  # RN10: mesma seed, mesmas frases sorteadas
-RTF_LIMIT = 0.5  # RN6: o modelo da demo precisa ter RTF menor ou igual a este limite
+RTF_LIMIT = 1.0  # RN6 (DR-12): o modelo da demo precisa ser mais rápido que o tempo real (era 0,5)
 ERRORS_REPORT_SIZE = 10  # quantas frases aparecem no errors.md
 
 # Legibilidade (RN7: Guia para Produções Audiovisuais Acessíveis, MinC/SAv, 2016)
@@ -40,7 +40,7 @@ REPETITION_MIN_REPEATS = 3  # quantas vezes seguidas o trecho precisa aparecer
 MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))  # RN2: tamanho máximo do upload
 MAX_DURATION_S = float(os.environ.get("MAX_DURATION_S", "60"))  # RN1: duração máxima do vídeo
 UPLOAD_FORM_MARGIN_BYTES = 1024 * 1024  # folga para os cabeçalhos do formulário no Content-Length
-DEFAULT_MODEL = "base"  # RN6: escolhido pelo benchmark do B2 (conferido em tests/test_api.py)
+DEFAULT_MODEL = "small"  # RN6 (DR-12): escolhido pelo benchmark do B2 (conferido em tests/test_api.py)
 FFPROBE_TIMEOUT_S = 15  # tempo máximo para o ffprobe analisar o arquivo
 FFMPEG_TIMEOUT_S = 60  # tempo máximo para o ffmpeg extrair o áudio
 # Formatos aceitos, pelo nome que o ffprobe dá ao conteúdo (não pela extensão do arquivo, RN3)

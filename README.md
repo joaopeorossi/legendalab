@@ -31,21 +31,28 @@ Comparei dois tamanhos do Whisper nas **427 frases do conjunto de teste do Commo
 
 - **WER:** palavras trocadas, faltando ou sobrando, divididas pelas palavras da frase correta, somando todas as frases.
 - **RTF:** tempo de processamento ÷ duração do áudio. RTF 0,32 = 10 s de áudio transcritos em 3,2 s.
-- **Regra de escolha:** o menor WER entre os modelos com RTF até 0,5. **Modelo da demo: whisper-base.**
+- **Regra de escolha:** o menor WER entre os modelos com RTF até 1,0, ou seja, mais rápidos que o tempo real. **Modelo da demo: whisper-small.**
 
-**Conclusão:** o small erra bem menos (22,9% contra 38,6%), mas com 2 núcleos leva 0,86 s para cada segundo de áudio, acima do limite que defini para a demo responder rápido. Por isso a demo usa o base, e é justamente por ele errar mais que a marcação dos trechos duvidosos é importante.
+**Conclusão:** a regra inicial pedia RTF até 0,5, um limite que eu defini antes de medir, e com ela a demo usaria o base. Quando vi os números, percebi que esse limite não tinha um motivo ligado a quem usa a legenda: para quem não ouve, acertar vale mais do que esperar alguns segundos a menos. Mudei a regra para "mais rápido que o tempo real" (RTF até 1,0), e a demo passou a usar o small, que erra 41% menos (22,9% contra 38,6%). Como a regra mudou depois de ver os números, os resultados dos dois modelos ficam aqui, lado a lado.
 
 ### A marcação de "trecho duvidoso" funciona?
 
-Apliquei às 427 frases a mesma regra que a demo usa para marcar dúvida:
+Apliquei às 427 frases a mesma regra que a demo usa para marcar dúvida, com os mesmos cortes nos dois modelos:
 
-- No modelo da demo (base), as frases marcadas tiveram **WER de 51,4%, contra 16,8%** nas demais, e concentraram **84% de todos os erros**.
-- O custo: **60% das frases** foram marcadas, então a demo mostra muitos destaques.
+| | whisper-small (demo) | whisper-base |
+|---|---|---|
+| Frases marcadas como duvidosas | 33% (141) | 60% (258) |
+| WER nas marcadas × nas demais | 42,2% × 13,0% | 51,4% × 16,8% |
+| Parte dos erros que cai em frases marcadas | 62% | 84% |
+| **Erros sem aviso** | **8,6%** (230 palavras) | **6,2%** (165 palavras) |
+
+- **Erros sem aviso:** palavras erradas em frases que não foram marcadas, divididas por todas as palavras. É o erro que a pessoa lê sem nenhum destaque, e por isso é o número que mais importa para quem não ouve.
+- **A troca:** o small erra menos no total, mas marca menos frases, então deixa mais erros passarem sem aviso (8,6% das palavras, contra 6,2% no base). O base avisa mais, mas, com 60% das frases marcadas, o destaque perde o sentido.
 - Os cortes foram definidos antes da medição (três deles são os padrões do próprio Whisper) e não foram ajustados olhando o conjunto de teste.
 
 ### Onde o modelo erra
 
-As frases com mais erros são listas de termos técnicos e nomes próprios ("lotusscript, corelscript", "Gerdau, PagBrasil, Piccadilly"), e em duas o modelo entrou em repetição ("e o hábita e o hábita e o hábita"). As 10 piores estão em [errors.md](results/2026-10-24_145853/errors.md).
+Nos dois modelos, as frases com mais erros são listas de termos técnicos e nomes próprios ("lotusscript, corelscript", "Gerdau, PagBrasil, Piccadilly"). No base, em duas frases o modelo entrou em repetição ("e o hábita e o hábita e o hábita"); as 10 piores do base estão em [errors.md](results/2026-10-24_145853/errors.md). No small, aparecem também números por extenso transcritos como algarismos ("um, dois, três…" virou "1, 2, 3…"), que a normalização atual conta como erro.
 
 Medido em 24/10/2026 · seed 42 · normalização v1 · dados completos em [results/2026-10-24_145853](results/2026-10-24_145853/) ([resumo](results/2026-10-24_145853/summary.csv), [calibração](results/2026-10-24_145853/calibration.json)).
 
@@ -97,7 +104,8 @@ Para refazer o benchmark, baixe o Common Voice pt-BR na Mozilla Data Collective 
 - **427 frases** bastam para um projeto de estudo, mas são poucas para conclusões gerais. Muitas são listas de termos técnicos e nomes próprios, que puxam o erro para cima.
 - O **RTF foi medido no meu computador**, com 2 núcleos, para imitar a máquina da demo. Na nuvem, o número pode ser outro.
 - O WER **não conta pontuação** e não converte números ("3" e "três" contam como palavras diferentes).
-- **Muitos destaques:** 60% das frases foram marcadas como duvidosas.
+- **Erros sem aviso:** com o small, 8,6% das palavras saem erradas sem nenhum destaque (no base, 6,2%), porque ele marca menos frases (33% contra 60%).
+- **Demora:** com 2 núcleos, o small leva 0,86 s para cada segundo de áudio, então um vídeo de 60 s leva perto de 1 minuto para ficar pronto.
 - A legenda **não descreve sons** (música, risos) **nem identifica quem fala**, como uma legenda completa para surdos faria.
 - A demo aceita vídeos de até **60 s** e **30 MB**, só em português.
 

@@ -164,7 +164,7 @@ def test_health(client: TestClient) -> None:
 
 
 def test_benchmark_reads_latest_results(client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """O /api/benchmark lê a execução mais recente e aplica a RN6 na hora."""
+    """O /api/benchmark lê a execução mais recente e aplica a RN6 na hora, com o limite que estiver no config."""
     run_dir = tmp_path / "2026-01-01_120000"
     run_dir.mkdir()
     run_info = {"date": "2026-01-01T12:00:00", "dataset": {"name": "teste"}, "seed": 42, "n_samples": 3,
@@ -174,8 +174,10 @@ def test_benchmark_reads_latest_results(client: TestClient, tmp_path: Path, monk
         "model,n_samples,corpus_wer,rtf\nwhisper-base,3,0.3,0.2\nwhisper-small,3,0.2,0.9\n", encoding="utf-8"
     )
     monkeypatch.setattr(config, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(config, "RTF_LIMIT", 0.5)  # o teste fixa o próprio limite: não depende do valor do config
     body = client.get("/api/benchmark").json()
-    assert body["default_model"] == "whisper-base"
+    assert body["rtf_limit"] == 0.5
+    assert body["default_model"] == "whisper-base"  # com 0,5, o small (RTF 0,9) fica de fora
     assert [m["model"] for m in body["models"]] == ["whisper-base", "whisper-small"]
 
 

@@ -14,6 +14,8 @@
       "wer_flagged": 0.5137,
       "wer_unflagged": 0.1679,
       "errors_in_flagged": 0.8395,
+      "errors_without_warning": 165,
+      "errors_without_warning_rate": 0.062,
       "reasons": {
         "palavra com baixa probabilidade": 258,
         "modelo inseguro no trecho": 26,
@@ -27,6 +29,8 @@
       "wer_flagged": 0.4216,
       "wer_unflagged": 0.1304,
       "errors_in_flagged": 0.6223,
+      "errors_without_warning": 230,
+      "errors_without_warning_rate": 0.0864,
       "reasons": {
         "modelo inseguro no trecho": 12,
         "palavra com baixa probabilidade": 141

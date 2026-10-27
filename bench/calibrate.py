@@ -17,7 +17,7 @@ from core.metrics import ErrorCounts, corpus_wer
 
 
 def _calibrate_model(rows: list[dict[str, str]]) -> dict[str, Any]:
-    """Separa as frases de um modelo em marcadas e não marcadas e calcula o WER de corpus de cada grupo."""
+    """Separa as frases de um modelo em marcadas e não marcadas e calcula o WER de cada grupo e os erros sem aviso."""
     flagged: list[ErrorCounts] = []
     unflagged: list[ErrorCounts] = []
     reasons: Counter[str] = Counter()
@@ -42,7 +42,9 @@ def _calibrate_model(rows: list[dict[str, str]]) -> dict[str, Any]:
         (flagged if found else unflagged).append(counts)
         reasons.update(found)
     flagged_errors = sum(c.substitutions + c.deletions + c.insertions for c in flagged)
-    total_errors = flagged_errors + sum(c.substitutions + c.deletions + c.insertions for c in unflagged)
+    unflagged_errors = sum(c.substitutions + c.deletions + c.insertions for c in unflagged)
+    total_errors = flagged_errors + unflagged_errors
+    total_words = sum(c.reference_words for c in flagged + unflagged)
     return {
         "flagged": len(flagged),
         "unflagged": len(unflagged),
@@ -51,6 +53,9 @@ def _calibrate_model(rows: list[dict[str, str]]) -> dict[str, Any]:
         "wer_unflagged": round(corpus_wer(unflagged), 4) if unflagged else None,
         # Que parte de todos os erros caiu em frases marcadas: quanto do erro a pessoa foi avisada.
         "errors_in_flagged": round(flagged_errors / total_errors, 4) if total_errors else None,
+        # Erros sem aviso: palavras erradas em frases NÃO marcadas, que a pessoa lê sem nenhum destaque.
+        "errors_without_warning": unflagged_errors,
+        "errors_without_warning_rate": round(unflagged_errors / total_words, 4) if total_words else None,
         "reasons": dict(reasons),
     }
 
@@ -79,8 +84,9 @@ def main() -> None:
         print(
             f"{model}: {result['flagged']} frases marcadas tiveram WER de {flagged_wer}, "
             f"contra {unflagged_wer} nas {result['unflagged']} demais, e concentraram "
-            f"{result['errors_in_flagged']:.0%} dos erros ({result['without_transcription']} sem transcrição, "
-            f"fora da conta). Motivos: {result['reasons']}"
+            f"{result['errors_in_flagged']:.0%} dos erros. Erros sem aviso: {result['errors_without_warning']} "
+            f"({result['errors_without_warning_rate']:.1%} das palavras). "
+            f"{result['without_transcription']} sem transcrição, fora da conta. Motivos: {result['reasons']}"
         )
 
     with (args.run_dir / "calibration.json").open("w", encoding="utf-8") as f:
