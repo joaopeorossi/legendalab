@@ -55,3 +55,12 @@ Reescrevi o README para alguém de fora entender o projeto em 2 minutos: o probl
 - **Uma decisão que tomei:** declarar como limitação que a legenda não descreve sons (música, risos) nem identifica quem fala. Uma legenda feita para surdos normalmente tem isso, e quem conhece o assunto vai notar a falta.
 
 ---
+
+### 2026-10-26 — Revisão da regra do modelo (DR-12)
+Mudei o modelo da demo do base para o small. A regra antiga pedia RTF até 0,5 e escolhia o base, que erra 38,6% das palavras. Agora a regra é "mais rápido que o tempo real" (RTF até 1,0), e a demo usa o small, que erra 22,9%.
+
+- **O que aprendi:** para quem não ouve, o número que mais importa não é o WER, é o erro sem aviso: a palavra errada numa frase que não ganhou ⚠. Com o small, 8,6% das palavras saem erradas sem aviso; com o base, 6,2%. O small erra menos no total, mas marca menos frases (33% contra 60%), então deixa mais erros passarem sem destaque.
+- **O que me confundiu:** se mudar a regra depois de ver os números era trapaça. Entendi a diferença: ajustar o corte de confiança olhando o teste mudaria o próprio número da calibração, mas a regra do modelo só escolhe qual versão vai para a demo e não muda nenhum número medido. Mesmo assim, deixei os resultados dos dois modelos no README e escrevi que a regra mudou.
+- **Uma decisão que tomei:** aceitar mais erros sem aviso em troca de muito menos erros no total. Com o base, 6 em cada 10 frases tinham ⚠, e quando quase tudo tem aviso, o aviso perde o sentido.
+
+---

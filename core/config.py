@@ -50,3 +50,9 @@ ALLOWED_FORMATS = {
 }
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results"
+
+# Demo estática (GitHub Pages, bench/export_demo.py): um vídeo pré-processado, publicado em site/
+SITE_DIR = PROJECT_ROOT / "site"
+DEMO_VIDEO_MAX_MB = 10  # tamanho máximo do site/demo.mp4 (ele fica para sempre no histórico do Git)
+DEMO_VIDEO_MAX_HEIGHT = 720  # altura máxima do vídeo publicado, em pixels
+DEMO_VIDEO_CRF = 28  # qualidade do H.264: número maior = arquivo menor e imagem pior

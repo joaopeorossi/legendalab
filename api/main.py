@@ -6,13 +6,11 @@ Rodar: .venv\\Scripts\\python -m uvicorn api.main:app --reload
 import csv
 import json
 import logging
-import math
 import shutil
 import tempfile
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -23,8 +21,8 @@ from api.errors import FILE_TOO_LARGE_MESSAGE, MEDIA_ERROR_STATUS, ApiError, err
 from api.uploads import save_upload_limited
 from core import config
 from core.media import MediaError, extract_audio, probe, validate_media
-from core.metrics import choose_default_model, rtf
-from core.pipeline import CaptionResult, make_captions
+from core.metrics import choose_default_model
+from core.pipeline import CaptionResult, make_captions, result_to_dict
 from core.transcribers.base import Transcriber
 from core.transcribers.whisper_local import WhisperTranscriber
 
@@ -107,38 +105,9 @@ def benchmark() -> dict[str, Any]:
     }
 
 
-def _json_safe(value: Any) -> Any:
-    """Troca números infinitos (CPS de um bloco sem duração) por None, porque JSON não aceita infinito."""
-    if isinstance(value, float) and not math.isfinite(value):
-        return None
-    if isinstance(value, dict):
-        return {key: _json_safe(item) for key, item in value.items()}
-    if isinstance(value, list):
-        return [_json_safe(item) for item in value]
-    return value
-
-
 def _build_response(request_id: str, transcriber: Transcriber, result: CaptionResult) -> dict[str, Any]:
-    """Monta o JSON de resposta; se não houve fala, devolve 200 com o aviso NO_SPEECH_DETECTED."""
-    speed = rtf(result.processing_time_s, result.audio_duration_s) if result.audio_duration_s > 0 else None
-    no_speech = {"code": "NO_SPEECH_DETECTED", "message": "Nenhuma fala foi detectada no vídeo."}
-    return _json_safe({
-        "request_id": request_id,
-        "model": transcriber.name,
-        "audio_duration_s": round(result.audio_duration_s, 2),
-        "processing_time_s": round(result.processing_time_s, 2),
-        "rtf": None if speed is None else round(speed, 3),
-        "cues": [asdict(cue) for cue in result.cues],
-        "vtt": result.vtt,
-        "legibility": {
-            "violations": [asdict(issue) for issue in result.legibility["violations"]],
-            "warnings": [asdict(issue) for issue in result.legibility["warnings"]],
-            "summary": result.legibility["summary"],
-        },
-        "low_confidence_cues": result.low_confidence_cues,
-        "notice": result.notice,
-        "warning": None if result.cues else no_speech,
-    })
+    """Monta o JSON de resposta: o formato comum do núcleo (result_to_dict) mais o request_id da requisição."""
+    return {"request_id": request_id, **result_to_dict(result, transcriber.name)}
 
 
 @app.post("/api/captions")

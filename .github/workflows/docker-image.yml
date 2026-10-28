@@ -1,0 +1,32 @@
+# A cada push na main, monta a imagem da demo com o Dockerfile e publica no GitHub Container Registry,
+# de onde o Azure Container Apps baixa e roda (DR-13).
+name: Publicar imagem Docker
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v7
+
+      - name: Entrar no GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Montar a imagem com o Dockerfile e publicar
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/joaopeorossi/legendalab:latest

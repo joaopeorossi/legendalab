@@ -1,0 +1,55 @@
+{
+  "model": "whisper-small",
+  "audio_duration_s": 10.01,
+  "processing_time_s": 7.25,
+  "rtf": 0.724,
+  "cues": [
+    {
+      "index": 1,
+      "start": 0.94,
+      "end": 4.96,
+      "text": "Olá, eu sou uma voz criada por inteligência artificial, por isso",
+      "lines": [
+        "Olá, eu sou uma voz criada por",
+        "inteligência artificial, por isso"
+      ],
+      "cps": 15.920398009950251,
+      "low_confidence": false,
+      "reason": ""
+    },
+    {
+      "index": 2,
+      "start": 4.96,
+      "end": 9.62,
+      "text": "marca os trechos duvidosos, como Faster Common Voice e WebVT.",
+      "lines": [
+        "marca os trechos duvidosos, como",
+        "Faster Common Voice e WebVT."
+      ],
+      "cps": 13.090128755364809,
+      "low_confidence": false,
+      "reason": ""
+    }
+  ],
+  "vtt": "WEBVTT\n\n1\n00:00:00.940 --> 00:00:04.960\nOlá, eu sou uma voz criada por\ninteligência artificial, por isso\n\n2\n00:00:04.960 --> 00:00:09.620\nmarca os trechos duvidosos, como\nFaster Common Voice e WebVT.\n",
+  "legibility": {
+    "violations": [],
+    "warnings": [
+      {
+        "cue_index": 1,
+        "rule": "cps",
+        "severity": "warning",
+        "value": 15.9,
+        "limit": 15
+      }
+    ],
+    "summary": {
+      "cues": 2,
+      "violations": 0,
+      "warnings": 1
+    }
+  },
+  "low_confidence_cues": [],
+  "notice": "Legenda automática: trechos destacados podem estar errados.",
+  "warning": null
+}

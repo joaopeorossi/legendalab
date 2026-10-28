@@ -52,7 +52,7 @@ João não escreve o código, mas **precisa entender cada parte** e conseguir ex
 - Nunca usar o nome original do arquivo enviado; salvar com UUID em pasta temporária e apagar em `finally`.
 - Nunca registrar em log o texto transcrito nem o nome original do arquivo.
 - Segredos só em variáveis de ambiente; `.env` no `.gitignore`.
-- **Nunca commitar áudio ou vídeo.** `data/` fica no `.gitignore` (os termos do Common Voice proíbem re-hospedar). `results/` só tem CSV, JSON e Markdown.
+- **Nunca commitar áudio ou vídeo.** `data/` fica no `.gitignore` (os termos do Common Voice proíbem re-hospedar). `results/` só tem CSV, JSON e Markdown. **Única exceção (DR-14):** `site/demo.mp4`, vídeo gravado pelo próprio João, só com ele, sem metadados e com menos de 10 MB, para a demo estática do GitHub Pages.
 - Do dataset, usar só as colunas `path` e `sentence`. Nunca usar `client_id`, `age`, `gender` ou `accents`, nunca tentar identificar quem fala e nunca publicar resultado por pessoa.
 
 ## Honestidade

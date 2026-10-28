@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LegendaLab: legendas que avisam onde a IA pode ter errado</title>
+<meta name="description" content="Legendas automáticas em português para pessoas surdas, com aviso dos trechos em que a IA pode ter errado e dos blocos rápidos demais para ler.">
+<meta property="og:title" content="LegendaLab">
+<meta property="og:description" content="Legendas automáticas em português que avisam onde a IA pode ter errado.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /*
+    Identidade: a caixa preta da legenda de TV (closed caption) é o elemento da marca.
+    Fonte: Atkinson Hyperlegible, desenhada pelo Braille Institute para leitura fácil.
+    Amarelo = trecho duvidoso; ciano = rápido para ler (as cores clássicas da legenda de TV).
+  */
+  :root {
+    --paper: #ffffff;
+    --ink: #1c1e21;
+    --muted: #5b6068;
+    --rule: #e3e5e8;
+    --wash: #f4f5f7;
+    --caption: #000000;
+    --caption-text: #ffffff;
+    --doubt: #ffd21f;
+    --doubt-ink: #5c4600;
+    --fast: #4fd6e3;
+    --fast-ink: #0a4e55;
+    --focus: #0b57d0;
+    --sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "Atkinson Hyperlegible Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #17181a;
+      --ink: #edeef0;
+      --muted: #a6abb3;
+      --rule: #2c2f33;
+      --wash: #212326;
+      --doubt-ink: #ffe27a;
+      --fast-ink: #9eeef5;
+      --focus: #8ab4ff;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.125rem;
+    line-height: 1.55;
+  }
+  a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--doubt); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Cabeçalho */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+  .wordmark {
+    font-family: var(--mono); font-weight: 700; font-size: 1.05rem; text-decoration: none;
+    background: var(--caption); color: var(--caption-text); padding: 4px 10px;
+  }
+  .top nav { display: flex; gap: 20px; font-size: 1rem; }
+
+  /* Abertura: a manchete é uma legenda */
+  .hero { padding-block: 48px 40px; }
+  .caption-lines { margin: 0; font-family: var(--mono); font-weight: 700; font-size: clamp(1.75rem, 4.6vw, 3.25rem); line-height: 1.5; }
+  .caption-lines span {
+    display: table; /* uma caixa por linha, como na TV */
+    background: var(--caption); color: var(--caption-text);
+    padding: 0 .35em; margin-bottom: .12em;
+  }
+  .lead { max-width: 38em; margin: 28px 0 0; font-size: 1.25rem; color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .caption-lines span { animation: cue-in .01s linear both; }
+    .caption-lines span:nth-child(1) { animation-delay: .25s; }
+    .caption-lines span:nth-child(2) { animation-delay: 1.15s; }
+    .caption-lines span:nth-child(3) { animation-delay: 2.05s; }
+    @keyframes cue-in { from { visibility: hidden; } to { visibility: visible; } }
+  }
+
+  /* Demonstração */
+  .demo { display: grid; gap: 28px; padding-block: 8px 56px; }
+  @media (min-width: 920px) { .demo { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; } }
+
+  video {
+    display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--caption);
+    border: 1px solid var(--rule);
+  }
+  video::cue { background: #000; color: #fff; font-family: var(--mono); font-size: 1.05em; line-height: 1.4; }
+
+  .notice {
+    margin: 14px 0 0; padding: 10px 14px; border-left: 6px solid var(--doubt);
+    background: var(--wash); font-weight: 600;
+  }
+  .about-video { margin: 12px 0 0; color: var(--muted); font-size: 1rem; max-width: 40em; }
+  .actions { margin: 18px 0 0; }
+  .button {
+    display: inline-block; font: inherit; font-weight: 700; font-size: 1rem; text-decoration: none;
+    padding: 10px 16px; background: var(--caption); color: var(--caption-text); border: 2px solid var(--caption);
+  }
+  .button:hover { background: var(--paper); color: var(--ink); border-color: var(--ink); }
+
+  .panel h2 { font-size: 1.375rem; line-height: 1.3; margin: 0 0 6px; }
+  #summary { margin: 0 0 14px; color: var(--muted); font-size: 1rem; }
+  .key { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 6px; font-size: .95rem; color: var(--muted); }
+  .key li { display: flex; gap: 10px; align-items: baseline; }
+
+  .key .mark { flex: none; }
+  .mark { display: inline-block; font-weight: 700; font-size: .9rem; padding: 1px 8px; color: #000; }
+  .mark.doubt { background: var(--doubt); }
+  .mark.fast { background: var(--fast); }
+
+  #cues { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .cue { position: relative; padding: 12px 12px 12px 18px; border-bottom: 1px solid var(--rule); }
+  .cue::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: transparent; }
+  .cue.doubt::before { background: var(--doubt); }
+  .cue.active { background: var(--wash); }
+  .cue.active::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 6px; background: var(--caption); }
+  @media (prefers-color-scheme: dark) { .cue.active::after { background: var(--caption-text); } }
+  @media (prefers-color-scheme: dark) { .caption-lines span, .wordmark { box-shadow: 0 0 0 1px #3a3d42; } video { border-color: #3a3d42; } }
+  .time {
+    font-family: var(--mono); font-size: .9rem; color: var(--muted); background: none; border: 0;
+    padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px;
+  }
+  .time:hover { color: var(--ink); text-decoration-color: currentColor; }
+  .cue-text { margin: 4px 0 0; font-size: 1.1rem; }
+  .cue-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .error { padding: 12px 14px; border-left: 6px solid #d93025; background: var(--wash); }
+
+  /* Resultados e como funciona */
+  .section { padding: 48px 0; border-top: 1px solid var(--rule); }
+  .section h2 { font-size: 1.75rem; line-height: 1.25; margin: 0 0 12px; max-width: 26em; }
+  .section > .wrap > p { max-width: 40em; }
+  .table-scroll { overflow-x: auto; margin: 20px 0 8px; }
+  table { border-collapse: collapse; min-width: 520px; width: 100%; max-width: 820px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: .95rem; }
+  td.num { font-size: 1.15rem; font-weight: 600; }
+  .table-note { color: var(--muted); font-size: 1rem; max-width: 46em; }
+  .steps { margin: 20px 0 0; padding-left: 1.4em; max-width: 44em; display: grid; gap: 10px; }
+  .steps li::marker { font-family: var(--mono); font-weight: 700; }
+
+  .foot { padding-block: 32px 48px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 1rem; }
+  .foot p { margin: 0 0 6px; max-width: 44em; }
+
+  [hidden] { display: none !important; }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .top nav { gap: 14px; }
+    .hero { padding-block: 28px; }
+    .lead { font-size: 1.125rem; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="wordmark" href="./" aria-label="LegendaLab, página inicial">LegendaLab</a>
+  <nav aria-label="Links do projeto">
+    <a href="https://github.com/joaopeorossi/legendalab">Código no GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap hero" aria-labelledby="titulo">
+    <h1 id="titulo" class="caption-lines">
+      <span>Legenda automática erra.</span>
+      <span>Quem ouve percebe na hora.</span>
+      <span>Quem não ouve, não.</span>
+    </h1>
+    <p class="lead">O LegendaLab gera a legenda em português de um vídeo curto, mede quanto a transcrição erra e marca os trechos em que a IA pode ter errado. Veja abaixo um vídeo já legendado pelo projeto.</p>
+  </section>
+
+  <section class="wrap demo" aria-label="Demonstração">
+    <div>
+      <video id="player" controls playsinline preload="metadata" src="demo.mp4">
+        <track id="track" kind="subtitles" srclang="pt" label="Português" src="demo.vtt" default>
+      </video>
+      <p class="notice" role="note">⚠ Legenda automática: os trechos marcados podem estar errados.</p>
+      <p class="about-video">Este vídeo foi processado no meu computador pelo modelo <span id="model-name">whisper-small</span>. A voz e o personagem foram gerados por IA, no Clipchamp. Para legendar um vídeo seu, rode o projeto a partir do código no GitHub.</p>
+      <p class="actions"><a class="button" href="demo.vtt" download="legendalab-demo.vtt">Baixar a legenda (.vtt)</a></p>
+    </div>
+
+    <div class="panel">
+      <h2>Blocos da legenda</h2>
+      <p id="summary" role="status" aria-live="polite">Carregando os blocos…</p>
+      <ul class="key">
+        <li><span class="mark doubt">⚠ Pode estar errado</span><span>a IA estava insegura neste trecho</span></li>
+        <li><span class="mark fast">Rápido para ler</span><span>passa do limite de leitura do Guia de 2016</span></li>
+      </ul>
+      <div id="error" class="error" role="alert" hidden></div>
+      <ol id="cues"></ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="resultados">
+    <div class="wrap">
+      <h2 id="resultados">O que o benchmark mostrou</h2>
+      <p>Comparei dois tamanhos do Whisper nas 427 frases do conjunto de teste do Common Voice em português. A demo usa o small, que erra bem menos. A troca é que ele marca menos frases, então deixa mais erros passarem sem aviso.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Modelo</th><th scope="col">Palavras erradas</th><th scope="col">Erradas sem aviso</th><th scope="col">Frases marcadas</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>whisper-small, usado na demo</td><td class="num">22,9%</td><td class="num">8,6%</td><td class="num">33%</td></tr>
+            <tr><td>whisper-base</td><td class="num">38,6%</td><td class="num">6,2%</td><td class="num">60%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">Erro sem aviso é a palavra errada numa frase que não recebeu ⚠. Para quem não ouve, é o erro que mais importa. No small, as frases marcadas tiveram 42,2% de palavras erradas, e as outras, 13,0%. Medido em 24/10/2026. <a href="https://github.com/joaopeorossi/legendalab/tree/main/results/2026-10-24_145853">Ver os resultados completos</a>.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="como">
+    <div class="wrap">
+      <h2 id="como">Como funciona</h2>
+      <ol class="steps">
+        <li>Transcreve a fala com o Whisper, rodando no próprio computador, sem API paga.</li>
+        <li>Divide o texto em blocos de até 2 linhas de 37 caracteres, como pede o Guia para Produções Audiovisuais Acessíveis (2016).</li>
+        <li>Aponta os blocos rápidos demais para ler, sem reescrever o texto.</li>
+        <li>Marca os trechos em que o próprio modelo estava inseguro.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+  <p>Projeto de estudo de João Rossi, estudante de Análise e Desenvolvimento de Sistemas na FIAP.</p>
+  <p><a href="https://github.com/joaopeorossi/legendalab">Código no GitHub</a>, sob licença MIT. <a href="https://www.linkedin.com/in/jo%C3%A3o-rossi-a9694739a/">LinkedIn</a>.</p>
+  </div>
+</footer>
+
+<script>
+  // Todo texto que vem do demo.json entra com textContent: um "<script>" na transcrição aparece como texto, não executa.
+  const player = document.getElementById("player");
+  const track = document.getElementById("track");
+  const summary = document.getElementById("summary");
+  const cueList = document.getElementById("cues");
+  const errorBox = document.getElementById("error");
+  const modelName = document.getElementById("model-name");
+
+  const RULES = {
+    cps: (v, l) => `${num(v)} caracteres por segundo; o limite é ${num(l)}`,
+    max_lines: (v, l) => `${num(v)} linhas; o limite é ${num(l)}`,
+    max_chars_per_line: (v, l) => `linha com ${num(v)} caracteres; o limite é ${num(l)}`,
+    min_duration: (v, l) => `fica ${num(v)} s na tela; o mínimo é ${num(l)} s`,
+    max_duration: (v, l) => `fica ${num(v)} s na tela; o máximo é ${num(l)} s`,
+  };
+  const TITLES = { cps: "Rápido para ler", max_lines: "Linhas demais", max_chars_per_line: "Linha longa demais",
+                   min_duration: "Pouco tempo na tela", max_duration: "Tempo demais na tela" };
+
+  const num = (v) => (v === null || v === undefined ? "?" : String(Math.round(v * 10) / 10).replace(".", ","));
+  const clock = (s) => {
+    const m = Math.floor(s / 60);
+    return `${String(m).padStart(2, "0")}:${(s % 60).toFixed(1).padStart(4, "0").replace(".", ",")}`;
+  };
+  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderCue(cue, issues) {
+    const item = el("li", "cue");
+    item.dataset.index = cue.index;
+
+    const time = el("button", "time", `${clock(cue.start)} até ${clock(cue.end)}`);
+    time.type = "button";
+    time.setAttribute("aria-label", `Ir para ${clock(cue.start)} no vídeo`);
+    time.addEventListener("click", () => { player.currentTime = cue.start; player.play(); });
+
+    item.append(time, el("p", "cue-text", cue.text));
+
+    const tags = el("div", "cue-tags");
+    if (cue.low_confidence) {
+      item.classList.add("doubt");
+      tags.append(el("span", "mark doubt", `⚠ Pode estar errado: ${cue.reason}`));
+    }
+    for (const issue of issues) {
+      const describe = RULES[issue.rule];
+      const title = TITLES[issue.rule] || issue.rule;
+      tags.append(el("span", "mark fast", describe ? `${title}: ${describe(issue.value, issue.limit)}` : title));
+    }
+    if (tags.childElementCount) item.append(tags);
+    return item;
+  }
+
+  function showDemo(body) {
+    modelName.textContent = body.model;
+    const byCue = new Map();
+    for (const issue of [...body.legibility.violations, ...body.legibility.warnings]) {
+      byCue.set(issue.cue_index, [...(byCue.get(issue.cue_index) || []), issue]);
+    }
+    cueList.replaceChildren(...body.cues.map((cue) => renderCue(cue, byCue.get(cue.index) || [])));
+
+    if (body.warning) { summary.textContent = body.warning.message; return; }
+    const doubts = body.low_confidence_cues.length;
+    const hard = new Set([...body.legibility.violations, ...body.legibility.warnings].map((i) => i.cue_index)).size;
+    summary.textContent =
+      `${plural(body.cues.length, "bloco", "blocos")}: ` +
+      `${doubts === 0 ? "nenhum" : doubts} marcado${doubts === 1 ? "" : "s"} como duvidoso${doubts === 1 ? "" : "s"} e ` +
+      `${hard === 0 ? "nenhum" : hard} rápido${hard === 1 ? "" : "s"} para ler. ` +
+      `Processado em ${num(body.processing_time_s)} s.`;
+  }
+
+  // Destaca na lista o bloco que está na tela.
+  track.track.mode = "showing";
+  track.addEventListener("cuechange", () => {
+    const active = new Set([...(track.track.activeCues || [])].map((c) => c.id));
+    cueList.querySelectorAll(".cue").forEach((li) => li.classList.toggle("active", active.has(li.dataset.index)));
+  });
+
+  fetch("demo.json")
+    .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json(); })
+    .then(showDemo)
+    .catch(() => {
+      summary.textContent = "";
+      errorBox.textContent = "Os blocos da legenda não carregaram. Se você abriu o arquivo direto do computador, " +
+        "sirva a pasta com: python -m http.server 8001 --directory site";
+      errorBox.hidden = false;
+    });
+</script>
+</body>
+</html>
