@@ -186,7 +186,7 @@
         <track id="track" kind="subtitles" srclang="pt" label="Português" src="demo.vtt" default>
       </video>
       <p class="notice" role="note">⚠ Legenda automática: os trechos marcados podem estar errados.</p>
-      <p class="about-video">Este vídeo foi processado no meu computador pelo modelo <span id="model-name">whisper-small</span>. A voz e o personagem foram gerados por IA, no Clipchamp. Para legendar um vídeo seu, rode o projeto a partir do código no GitHub.</p>
+      <p class="about-video">Este vídeo foi processado no meu computador pelo modelo <span id="model-name">whisper-small</span>. A pessoa e a voz do vídeo são um avatar gerado por IA, no Clipchamp. Para legendar um vídeo seu, rode o projeto a partir do código no GitHub.</p>
       <p class="actions"><a class="button" href="demo.vtt" download="legendalab-demo.vtt">Baixar a legenda (.vtt)</a></p>
     </div>
 
@@ -312,8 +312,8 @@
     const hard = new Set([...body.legibility.violations, ...body.legibility.warnings].map((i) => i.cue_index)).size;
     summary.textContent =
       `${plural(body.cues.length, "bloco", "blocos")}: ` +
-      `${doubts === 0 ? "nenhum" : doubts} marcado${doubts === 1 ? "" : "s"} como duvidoso${doubts === 1 ? "" : "s"} e ` +
-      `${hard === 0 ? "nenhum" : hard} rápido${hard === 1 ? "" : "s"} para ler. ` +
+      `${doubts === 0 ? "nenhum" : doubts} marcado${doubts > 1 ? "s" : ""} como duvidoso${doubts > 1 ? "s" : ""} e ` +
+      `${hard === 0 ? "nenhum" : hard} rápido${hard > 1 ? "s" : ""} para ler. ` +
       `Processado em ${num(body.processing_time_s)} s.`;
   }
 

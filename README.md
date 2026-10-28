@@ -2,9 +2,11 @@
 
 Legendas automáticas em português para pessoas surdas, que **avisam onde a IA pode ter errado** e **apontam os trechos rápidos demais para ler**.
 
-<!-- GIF da demo: salvar em assets/demo.gif e apagar as marcas de comentário desta linha.
-![Demonstração: envio de um vídeo, legenda no player e lista de blocos com destaques](assets/demo.gif)
--->
+**[Ver a demonstração](https://joaopeorossi.github.io/legendalab/)**: um vídeo de exemplo já legendado pelo projeto, com a lista de blocos e os destaques.
+
+[![Página da demonstração do LegendaLab: vídeo com legenda e lista de blocos com destaques](assets/demo.png)](https://joaopeorossi.github.io/legendalab/)
+
+*A pessoa e a voz do vídeo de exemplo são um avatar gerado por IA (Clipchamp).*
 
 ## O problema
 
@@ -108,6 +110,7 @@ Para refazer o benchmark, baixe o Common Voice pt-BR na Mozilla Data Collective 
 - **Demora:** com 2 núcleos, o small leva 0,86 s para cada segundo de áudio, então um vídeo de 60 s leva perto de 1 minuto para ficar pronto.
 - A legenda **não descreve sons** (música, risos) **nem identifica quem fala**, como uma legenda completa para surdos faria.
 - A demo aceita vídeos de até **60 s** e **30 MB**, só em português.
+- A **demonstração online** usa um vídeo já processado no meu computador: o visitante não envia o próprio vídeo. Para isso, rode o projeto localmente. O vídeo de exemplo tem voz sintética, mais fácil de transcrever que a fala humana; os números do benchmark são de vozes humanas.
 
 ## Fontes
 

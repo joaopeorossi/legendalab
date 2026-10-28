@@ -64,3 +64,12 @@ Mudei o modelo da demo do base para o small. A regra antiga pedia RTF até 0,5 e
 - **Uma decisão que tomei:** aceitar mais erros sem aviso em troca de muito menos erros no total. Com o base, 6 em cada 10 frases tinham ⚠, e quando quase tudo tem aviso, o aviso perde o sentido.
 
 ---
+
+### 2026-10-28 — Demo no GitHub Pages (DR-14)
+O deploy no Azure travou na verificação da conta (Microsoft Authenticator), então publiquei uma demo estática no GitHub Pages. O `bench/export_demo.py` roda o pipeline de verdade no meu computador e grava o vídeo reduzido, a legenda (`demo.vtt`) e os blocos com os destaques (`demo.json`). A página só exibe esse resultado, sem servidor.
+
+- **O que aprendi:** nem toda demo precisa de servidor. Como a legenda já está pronta, o GitHub Pages só entrega arquivos, de graça e sem cartão, e o link abre na hora. O lado ruim é que o visitante não envia o próprio vídeo, e isso está escrito na página.
+- **O que me confundiu:** o primeiro deploy falhou com "Get Pages site failed". O workflow estava certo, mas o Pages ainda não estava ligado nas configurações do repositório. Tem que escolher "GitHub Actions" como fonte antes de mandar o código.
+- **Uma decisão que tomei:** usar um avatar de IA no vídeo de exemplo e avisar isso na página e no README. A própria demo mostra a limitação do projeto: os nomes técnicos saíram errados ("WebVT" no lugar de "WebVTT") e nenhum bloco ganhou ⚠. É o erro sem aviso, o número que mais importa para quem não ouve.
+
+---
